@@ -1,0 +1,134 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  13
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format          ascii;
+    class           dictionary;
+    location        "system";
+    object          snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#includeEtc     "caseDicts/mesh/generation/snappyHexMeshDict.cfg"
+
+castellatedMesh true;
+
+snap            true;
+
+addLayers       true;
+
+geometry
+{
+    mainWing
+    {
+        type            triSurface;
+        file            "mainWing.stl";
+    }
+    flap
+    {
+        type            triSurface;
+        file            "flap.stl";
+    }
+    circularInterface
+    {
+        type            cylinder;
+        point1          ( 0.29 0.05 -1 );
+        point2          ( 0.29 0.05 1 );
+        radius          0.0934782;
+    }
+}
+
+castellatedMeshControls
+{
+    features        ( );
+    refinementSurfaces
+    {
+        mainWing
+        {
+            level           ( 2 2 );
+            patchInfo
+            {
+                type            wall;
+            }
+        }
+        flap
+        {
+            level           ( 2 2 );
+            patchInfo
+            {
+                type            wall;
+            }
+        }
+        circularInterface
+        {
+            level           ( 0 0 );
+            faceZone        circularInterface;
+            faceType        internal;
+        }
+    }
+    refinementRegions-disabled
+    {
+        <surface>
+        {
+            mode            inside;
+            level           4;
+        }
+    }
+    insidePoint     ( -0.15 0.05 0.1 );
+    nCellsBetweenLevels 2;
+}
+
+snapControls
+{
+    nSmoothPatch    5;
+    tolerance       1.5;
+    nSolveIter      100;
+    nRelaxIter      10;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap true;
+    explicitFeatureSnap false;
+    multiRegionFeatureSnap false;
+}
+
+addLayersControls
+{
+    relativeSizes   false;
+    layers
+    {
+        mainWing
+        {
+            nSurfaceLayers  3;
+        }
+        flap
+        {
+            nSurfaceLayers  3;
+        }
+    }
+    firstLayerThickness 0.00045;
+    expansionRatio  1.2;
+    minThickness    0.00015;
+    nGrow           0;
+    featureAngle    60;
+    slipFeatureAngle 30;
+    nRelaxIter      5;
+    nSmoothSurfaceNormals 3;
+    nSmoothNormals  5;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedianAxisAngle 90;
+    nBufferCellsNoExtrude 1;
+    nLayerIter      50;
+}
+
+writeFlags-disabled ( scalarLevels layerSets layerFields );
+
+mergeTolerance  1e-06;
+
+
+// ************************************************************************* //

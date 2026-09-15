@@ -1,0 +1,52 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      p;
+}
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    #includeEtc "caseDicts/setConstraintTypes"
+
+    farfield
+    {
+        type            freestreamPressure;
+        freestreamValue uniform 0;
+        value           uniform 0;
+    }
+
+    mainWing
+    {
+        type            fixedFluxPressure;
+        value           uniform 0;
+    }
+
+    flap
+    {
+        type            fixedFluxPressure;
+        value           uniform 0;
+    }
+
+    nonCouple1
+    {
+        type            fixedFluxPressure;
+        value           uniform 0;
+    }
+
+    nonCouple2
+    {
+        type            fixedFluxPressure;
+        value           uniform 0;
+    }
+}
+
+// ************************************************************************* //
